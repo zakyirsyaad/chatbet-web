@@ -6,7 +6,7 @@ interface Params {
   id: number;
 }
 
-export default async function page({ params }: { params: Params }) {
+export default async function page({ params }: { params: Promise<Params> }) {
   const { id } = await params;
   return (
     <main className="w-full">
