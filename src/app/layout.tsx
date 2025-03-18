@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
+// import Header from "@/components/header";
 
-const inter = Inter({});
+const inter = Inter({
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
