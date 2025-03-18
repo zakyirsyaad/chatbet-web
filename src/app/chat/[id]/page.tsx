@@ -2,8 +2,7 @@
 import React from "react";
 // import ChatContainer from "../../../components/ChatContainer";
 
-export default async function page({ params }: { params: any }) {
-  const { id } = await params;
+export default function page() {
   return (
     <main>
       {/* <header className="border-b p-3">
@@ -13,7 +12,6 @@ export default async function page({ params }: { params: any }) {
           <p>{id}</p>
         </div>
       </header> */}
-      {id}
     </main>
   );
 }
