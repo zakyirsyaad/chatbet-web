@@ -1,6 +1,6 @@
-import { AvatarUser } from "@/components/AvatarUser";
+// import { AvatarUser } from "@/components/AvatarUser";
 import React from "react";
-import ChatContainer from "../../../components/ChatContainer";
+// import ChatContainer from "../../../components/ChatContainer";
 
 export default async function page({ params }: { params: any }) {
   const { id } = await params;
@@ -13,6 +13,7 @@ export default async function page({ params }: { params: any }) {
           <p>{id}</p>
         </div>
       </header> */}
+      {id}
     </main>
   );
 }

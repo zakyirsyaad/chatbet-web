@@ -75,7 +75,7 @@ export default function ChatContainer() {
 
   const handleSendMessage = async () => {
     if (message.trim()) {
-      const { data, error } = await supabase.from("messages").insert([
+      const { error } = await supabase.from("messages").insert([
         {
           sender: "User",
           content: message,
