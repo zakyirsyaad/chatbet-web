@@ -13,7 +13,7 @@ export default function Sidebar() {
   const [groups, setGroups] = React.useState<chatGroupsType[] | null>([]);
 
   async function fetchListGroups() {
-    let { data } = await supabase.from("chat_groups").select("*");
+    const { data } = await supabase.from("chat_groups").select("*");
     setGroups(data);
   }
 

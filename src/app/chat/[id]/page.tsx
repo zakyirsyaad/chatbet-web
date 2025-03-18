@@ -2,7 +2,11 @@ import HeaderGroup from "@/components/HeaderGroup";
 import Messages from "@/components/Messages";
 import React from "react";
 
-export default async function page({ params }: { params: any }) {
+interface Params {
+  id: number;
+}
+
+export default async function page({ params }: { params: Params }) {
   const { id } = await params;
   return (
     <main className="w-full">

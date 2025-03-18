@@ -3,12 +3,12 @@ import { Users } from "lucide-react";
 import React from "react";
 
 export default async function HeaderGroup({ groupId }: { groupId: number }) {
-  let { data: groups } = await supabase
+  const { data: groups } = await supabase
     .from("chat_groups")
     .select("*")
     .eq("id", groupId);
 
-  let { data: messages } = await supabase
+  const { data: messages } = await supabase
     .from("messages")
     .select("sender")
     .eq("chat_group_id", groupId);
