@@ -1,10 +1,9 @@
 import React from "react";
-import ChatContainer from "../../components/ChatContainer";
 
 export default function page() {
   return (
-    <div>
-      <ChatContainer />
+    <div className="flex items-center w-full justify-center">
+      <p className="text-xl font-bold">Select Your Group Chat</p>
     </div>
   );
 }
