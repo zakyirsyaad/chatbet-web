@@ -5,6 +5,7 @@ import "./globals.css";
 
 const inter = Inter({
   display: "swap",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
