@@ -25,7 +25,9 @@ export default async function HeaderGroup({ groupId }: { groupId: number }) {
           </div>
           <div>
             <p>{data.name}</p>
-            <p className="text-sm text-muted-foreground">{uniqueSenders}</p>
+            <p className="text-sm text-muted-foreground">
+              {uniqueSenders.slice(0, 23)}...
+            </p>
           </div>
         </div>
       ))}

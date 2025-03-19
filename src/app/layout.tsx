@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import WalletContextProvider from "@/config/WalletContextProvider";
 // import Header from "@/components/header";
 
 const inter = Inter({
@@ -21,8 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        {children}
-        {/* <Header /> */}
+        <WalletContextProvider>{children}</WalletContextProvider>
       </body>
     </html>
   );

@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 type Message = {
   id: string;
@@ -26,8 +27,10 @@ export default function Messages({ groupId }: { groupId: number }) {
   const [messages, setMessages] = React.useState<Message[] | null>();
   const scrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const [newMessage, setNewMessage] = React.useState("");
+  // const [pending, setPending] = React.useState<boolean>(false);
 
   async function fetchMessages() {
+    // setPending(true);
     const { data } = await supabase
       .from("messages")
       .select("*")
@@ -35,6 +38,7 @@ export default function Messages({ groupId }: { groupId: number }) {
       .order("timestamp", { ascending: true });
 
     setMessages(data);
+    // setPending(false);
   }
 
   React.useEffect(() => {
@@ -49,9 +53,11 @@ export default function Messages({ groupId }: { groupId: number }) {
     scrollToBottom();
   }, [messages]);
 
+  const { publicKey } = useWallet();
+
   async function sendMessage() {
     const messageData = {
-      sender: "pengirim",
+      sender: publicKey,
       content: newMessage,
       chat_group_id: groupId,
       timestamp: new Date().toISOString(),
@@ -74,7 +80,9 @@ export default function Messages({ groupId }: { groupId: number }) {
             return (
               <div key={data.id} className="space-y-1" ref={scrollAreaRef}>
                 <div className="flex gap-5 items-center">
-                  <p className="font-medium">{data.sender}</p>
+                  <p className="font-medium">
+                    {data.sender?.slice(0, 5)}...{data.sender?.slice(-3)}
+                  </p>
                   <span className="text-xs text-muted-foreground">
                     {new Date(data.timestamp).toLocaleTimeString()}
                   </span>
