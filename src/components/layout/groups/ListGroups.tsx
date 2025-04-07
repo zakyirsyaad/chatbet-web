@@ -67,7 +67,9 @@ export default function ListGroups() {
 
       setGroups(groupsWithMembers);
     } catch (error) {
-      toast("Error fetching user groups");
+      toast("Error fetching user groups", {
+        description: String(error),
+      });
     }
   }, [user]);
 
