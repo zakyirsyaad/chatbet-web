@@ -119,7 +119,7 @@ export default function Header() {
 
   return (
     <header className="space-y-5 mb-5">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Chats</h1>
           {user && (
