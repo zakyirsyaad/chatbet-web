@@ -41,9 +41,10 @@ export default function Sidebar() {
     };
 
     try {
-      const { error } = await supabase.from("chat_groups").insert([groupData]);
-      if (error) alert(error);
-      setNewGroup("");
+      const { error } = await supabase
+        .from("chat_groups")
+        .insert([groupData])
+        .eq("user_id", publicKey);
     } catch (error) {
       alert(`Error sending message: ${error}`);
     }

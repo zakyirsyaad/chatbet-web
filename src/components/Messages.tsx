@@ -74,7 +74,7 @@ export default function Messages({ groupId }: { groupId: number }) {
   }
   return (
     <div className="space-y-5">
-      <ScrollArea className="h-[calc(100vh-20vh)] mx-auto max-w-3xl">
+      <ScrollArea className="h-1/2 mx-auto max-w-3xl">
         <div className="space-y-5">
           {messages?.map((data: Message) => {
             return (

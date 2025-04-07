@@ -1,7 +1,11 @@
 "use client";
 import React from "react";
 import * as web3 from "@solana/web3.js";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import {
+  BitgetWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -14,11 +18,20 @@ export default function WalletContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const wallet = [new PhantomWalletAdapter()];
-  const endpoint = web3.clusterApiUrl("devnet");
+  const network = web3.clusterApiUrl("devnet");
+  // const network = WalletAdapterNetwork.Devnet;
+  const wallets = React.useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new BitgetWalletAdapter(),
+    ],
+    [network]
+  );
+
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallet}>
+    <ConnectionProvider endpoint={network}>
+      <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
