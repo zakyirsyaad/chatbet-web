@@ -1,28 +1,74 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { supabase } from "@/utils/supabase";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 import ButtonBack from "@/components/ButtonBack";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import WalletConnect from "@/components/WalletConnect";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { redirect } from "next/navigation";
-import React from "react";
-import { toast } from "sonner";
 
-export default function page() {
+export default function Page() {
   const { publicKey } = useWallet();
   const user = publicKey?.toString();
 
-  const [name, setName] = React.useState<string>("");
+  const [idUser, setIdUser] = useState<string[] | null>(null);
+  const [name, setName] = useState<string>("");
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-  async function sendUserData() {
-    toast("success user data", {
-      description: name + " " + user,
-    });
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data: users, error } = await supabase
+          .from("users")
+          .select("id");
+        if (error) throw error;
+        const usersMap = users?.map((data) => data.id);
+        setIdUser(usersMap);
+      } catch (error) {
+        toast("Error fetching users:", {
+          description: String(error),
+        });
+      }
+    };
+    fetchUser();
+  }, []);
 
-    redirect("/chats");
-  }
+  useEffect(() => {
+    if (user && idUser?.includes(user)) {
+      redirect("/chats");
+    }
+  }, [user, idUser]);
 
+  const usersValue = {
+    id: user,
+    name: name,
+    image: "",
+  };
+
+  const sendUserData = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("users")
+      .insert([usersValue])
+      .select();
+
+    if (error) {
+      setLoading(false);
+      toast("Error Creating User", {
+        description: String(error),
+      });
+    } else {
+      setLoading(false);
+      toast("Success Creating User", {
+        description: String(data?.[0]),
+      });
+      redirect("/chats");
+    }
+  };
+  console.log(idUser);
   return (
     <main className="space-y-5 max-w-sm mx-auto p-5">
       <ButtonBack />
@@ -34,12 +80,12 @@ export default function page() {
           <WalletConnect />
         </div>
       )}
-      {publicKey && (
+      {publicKey && idUser && !idUser.includes(String(user)) && (
         <>
           <section>
             <WalletConnect />
             <h1 className="text-2xl font-semibold mt-2">
-              Let us more know about you
+              Let us know more about you
             </h1>
             <p className="text-sm text-muted-foreground">
               You have full control over access to personal data.
@@ -63,8 +109,8 @@ export default function page() {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <Button onClick={sendUserData} disabled={!name}>
-              Save Profile
+            <Button onClick={sendUserData} disabled={!name || loading}>
+              {loading ? "Loading" : "Save"}
             </Button>
           </section>
         </>

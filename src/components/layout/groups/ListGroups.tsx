@@ -1,8 +1,86 @@
-import { Users } from "lucide-react";
+"use client";
+import { supabase } from "@/utils/supabase";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { LoaderCircle, Users } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
+
+interface Member {
+  id: string;
+  name: string;
+}
+
+interface Group {
+  id: string;
+  name: string;
+  members: Member[];
+}
 
 export default function ListGroups() {
+  const { publicKey } = useWallet();
+  const user = publicKey?.toString();
+
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  const fetchUserGroups = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      const { data: memberData, error: memberError } = await supabase
+        .from("group_chat_members")
+        .select("group_chat_id")
+        .eq("user_id", user);
+
+      if (memberError) throw memberError;
+
+      const groupIds = memberData.map((member) => member.group_chat_id);
+
+      const { data: groupData, error: groupError } = await supabase
+        .from("group_chat")
+        .select("*")
+        .in("id", groupIds);
+
+      if (groupError) throw groupError;
+
+      const groupsWithMembers = await Promise.all(
+        groupData.map(async (group) => {
+          const { data: members, error: membersError } = await supabase
+            .from("group_chat_members")
+            .select("user_id")
+            .eq("group_chat_id", group.id);
+
+          if (membersError) throw membersError;
+
+          const userIds = members.map((member) => member.user_id);
+
+          const { data: usersData, error: usersError } = await supabase
+            .from("users")
+            .select("name, id")
+            .in("id", userIds);
+
+          if (usersError) throw usersError;
+
+          return { ...group, members: usersData };
+        })
+      );
+
+      setGroups(groupsWithMembers);
+    } catch (error) {
+      toast("Error fetching user groups");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchUserGroups();
+
+    const interval = setInterval(() => {
+      fetchUserGroups();
+    }, 1000); // Fetch every second
+
+    return () => clearInterval(interval);
+  }, [fetchUserGroups]);
+
   return (
     <section>
       {groups.map((group) => (
@@ -11,15 +89,13 @@ export default function ListGroups() {
             <div className="flex items-center space-x-3">
               <Users />
               <div>
-                <h3 className="text-lg font-semibold">{group.name}</h3>
-                <p className="text-xs">{group.members.join(", ")}</p>
-                <p className="text-sm text-muted-foreground">
-                  {group.lastMessage}
+                <h3 className="text-lg font-semibold capitalize">
+                  {group.name}
+                </h3>
+                <p className="text-xs">
+                  {group.members.map((member) => member.name).join(", ")}
                 </p>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-400">{group.lastMessageTime}</p>
             </div>
           </div>
         </Link>
@@ -27,27 +103,3 @@ export default function ListGroups() {
     </section>
   );
 }
-
-const groups = [
-  {
-    id: 1,
-    name: "Group 1",
-    members: ["Member 1", "Member 2", "Member 3"],
-    lastMessage: "Hello!",
-    lastMessageTime: "10:00 AM",
-  },
-  {
-    id: 2,
-    name: "Group 2",
-    members: ["Member A", "Member B", "Member C"],
-    lastMessage: "Hi there!",
-    lastMessageTime: "11:30 AM",
-  },
-  {
-    id: 3,
-    name: "Group 3",
-    members: ["User X", "User Y", "User Z"],
-    lastMessage: "Good morning!",
-    lastMessageTime: "9:15 AM",
-  },
-];
