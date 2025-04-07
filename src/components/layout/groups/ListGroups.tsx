@@ -1,7 +1,7 @@
 "use client";
 import { supabase } from "@/utils/supabase";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { LoaderCircle, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";

@@ -3,12 +3,11 @@ import { supabase } from "@/utils/supabase";
 import { useWallet } from "@solana/wallet-adapter-react";
 import React, { useEffect, useRef, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { Send, User } from "lucide-react";
+import { Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Message {
@@ -241,7 +240,7 @@ export default function ChatGroup({ groupId }: ChatProps) {
                       isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
                     }`}
                   >
-                    <CardContent className="p-3">{message.content}</CardContent>
+                    <div className="p-2">{message.content}</div>
                   </div>
                   <span className="text-xs text-muted-foreground mt-1 px-1">
                     {formatTime(message.created_at)}
